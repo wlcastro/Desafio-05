@@ -25,9 +25,24 @@ class TransactionsRepository {
 
   public getBalance(): Balance {
     const balance : Balance = {income: 0, outcome:0, total:0 };
-    balance.income = 0;
-    balance.outcome = 0;
-    balance.total = balance.income - balance.outcome;
+    const tot = (acc:number, trans:CreateTransactionDTO) => {
+      if(trans.type ==='income')
+        return acc + trans.value
+      return acc - trans.value
+    }
+    const inc = (acc:number, trans:CreateTransactionDTO) => {
+      if(trans.type ==='income')
+        return acc + trans.value
+      return acc 
+    }
+    const out = (acc:number, trans:CreateTransactionDTO) => {
+      if(trans.type ==='outcome')
+        return acc + trans.value
+      return acc 
+    }
+    balance.income = this.transactions.reduce(inc,0);
+    balance.outcome = this.transactions.reduce(out,0);
+    balance.total = this.transactions.reduce(tot,0);
 
     return balance;
   }
